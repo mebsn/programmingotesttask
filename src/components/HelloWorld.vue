@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div id="container">
     <input type="number" placeholder="enter rows" v-model="row" />
     <input type="number" placeholder="enter columns" v-model="column" />
     <div class="create_table" @click="createTable()">Create Table</div>
@@ -16,7 +16,7 @@ export default {
       column: null,
       mainArray: [],
       chunkedArray: [],
-      spiralArray:[],
+      spiralArray: [],
     };
   },
   methods: {
@@ -26,7 +26,6 @@ export default {
         array.push(i);
       }
       this.mainArray = array;
-      // console.log(this.mainArray);
     },
     chunk(items, size) {
       const chunks = [];
@@ -38,48 +37,64 @@ export default {
       this.chunkedArray = chunks;
       console.log(this.chunkedArray);
     },
-    spiralOrder(matrix) {
-      let ans = [];
-
-      if (matrix.length == 0) return ans;
-
-      let R = this.row,
-        C = this.column;
-      let seen = new Array(R);
-      for (let i = 0; i < R; i++) {
-        seen[i] = new Array(C);
-        for (let j = 0; j < C; j++) {
-          seen[i][j] = false;
+    spiralOrder(m,n,a) {
+      let val = 1;
+    let k = 0, l = 0;
+    while (k < m && l < n)
+    {
+        for (let i = l; i < n; ++i)
+            a[k][i] = val++;
+ 
+        k++;
+        for (let i = k; i < m; ++i)
+            a[i][n-1] = val++;
+        n--;
+ 
+        if (k < m)
+        {
+            for (let i = n - 1; i >= l; --i)
+                a[m-1][i] = val++;
+            m--;
         }
-      }
-
-      let dr = [0, 1, 0, -1];
-      let dc = [1, 0, -1, 0];
-      let r = 0,
-        c = 0,
-        di = 0;
-      for (let i = 0; i < R * C; i++) {
-        ans.push(matrix[r]);
-        seen[r] = true;
-        let cr = r + dr[di];
-        let cc = c + dc[di];
-
-        if (0 <= cr && cr < R && 0 <= cc && cc < C && !seen[cr][cc]) {
-          r = cr;
-          c = cc;
-        } else {
-          di = (di + 1) % 4;
-          r += dr[di];
-          c += dc[di];
+        if (l < n)
+        {
+            for (let i = m - 1; i >= k; --i)
+                 a[i][l] = val++;
+            l++;
         }
-      }
-      this.spiralArray = ans;
-      console.log("bla", this.spiralArray);
+    }
+    this.spiralArray = a;
     },
     async createTable() {
+      document.getElementById("myTable").innerHTML= "";
       this.createArray(this.row, this.column);
       this.chunk(this.mainArray, this.column);
-      this.spiralOrder(this.chunkedArray);
+
+      let rn = this.row;
+      let cn = this.column;
+      console.log(rn);
+      console.log(cn);
+      let a = Array.from(Array(parseInt(rn, 10)), () => new Array(parseInt(cn, 10)));
+
+      this.spiralOrder(this.row,this.column,a);
+
+      for (var r = 0; r < parseInt(rn, 10); r++) {
+        var x = document.getElementById("myTable").insertRow(r);
+        for (var c = 0; c < parseInt(cn, 10); c++) {
+          var y = x.insertCell(c);
+          y.innerHTML = this.spiralArray[r][c];
+          if ( 40*this.spiralArray[r][c] < 256){
+            y.style.backgroundColor = `rgba(${40*this.spiralArray[r][c]},0,0 )`;
+
+          }
+          else if ( 40*this.spiralArray[r][c] > 255 && 40*this.spiralArray[r][c] < 511) {
+            y.style.backgroundColor = `rgba(0,${(40*this.spiralArray[r][c])-255},0 )`;
+          }
+          else if ( 40*this.spiralArray[r][c] > 510) {
+            y.style.backgroundColor = `rgba(0,0,${40*this.spiralArray[r][c]-510} )`;
+          }
+        }
+      }
     },
   },
 };
@@ -87,7 +102,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.container {
+#container {
   width: 100%;
   height: 100vh;
   display: flex;
