@@ -1,58 +1,102 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div class="container">
+    <input type="number" placeholder="enter rows" v-model="row" />
+    <input type="number" placeholder="enter columns" v-model="column" />
+    <div class="create_table" @click="createTable()">Create Table</div>
+    <table id="myTable"></table>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
+  name: "HelloWorld",
+  data() {
+    return {
+      row: null,
+      column: null,
+      mainArray:[],
+    };
+  },
+  methods: {
+    createArray(n,m) {
+      let array = [];
+      for (let i = 1; i < n * m + 1; i++) {
+        array.push(i);
+      }
+      this.mainArray = array;
+      // console.log(this.mainArray);
+    },
+    formSpiralMatrix() {
+    const arr = this.mainArray;
+    // console.log("bla", arr);
+    let row = 0;
+    let col = 0;
+    let rowEnd = this.row - 1;
+    let colEnd = this.column - 1;
+    let counter = 1;
+    while (col <= colEnd && row <= rowEnd) {
+        for (let i = col; i <= colEnd; i++) {
+            arr[row][i] = counter;
+            counter++;
+        }
+        row++;
+
+        for (let i = row; i <= rowEnd; i++) {
+            arr[i][colEnd] = counter;
+            counter++;
+        }
+        colEnd--;
+
+        for (let i = colEnd; i >= col; i--) {
+            arr[rowEnd][i] = counter;
+            counter++;
+        }
+        rowEnd--;
+
+        for (let i = rowEnd; i >= row; i--) {
+            arr[i][col] = counter;
+            counter++;
+        }
+        col++;
+    }
+    return arr;
+    },
+    async createTable(){
+      await this.createArray(this.row, this.column);
+      this.formSpiralMatrix(this.mainArray);
+    }
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+input {
+  margin-top: 20px;
+  width: 120px;
+  height: 25px;
+  border-radius: 4px;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+.create_table {
+  width: 160px;
+  height: 30px;
+  background-color: aqua;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  color: black;
+  align-items: center;
+  margin-top: 20px;
+  cursor: pointer;
 }
-a {
-  color: #42b983;
+#myTable {
+  margin-top: 70px;
 }
 </style>
