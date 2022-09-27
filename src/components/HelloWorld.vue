@@ -14,31 +14,12 @@ export default {
     return {
       row: null,
       column: null,
-      mainArray: [],
-      chunkedArray: [],
       spiralArray: [],
     };
   },
   methods: {
-    createArray(n, m) {
-      let array = [];
-      for (let i = 1; i < n * m + 1; i++) {
-        array.push(i);
-      }
-      this.mainArray = array;
-    },
-    chunk(items, size) {
-      const chunks = [];
-      items = [].concat(...items);
-
-      while (items.length) {
-        chunks.push(items.splice(0, size));
-      }
-      this.chunkedArray = chunks;
-      console.log(this.chunkedArray);
-    },
     spiralOrder(m,n,a) {
-      let val = 1;
+    let val = 1;
     let k = 0, l = 0;
     while (k < m && l < n)
     {
@@ -67,13 +48,9 @@ export default {
     },
     async createTable() {
       document.getElementById("myTable").innerHTML= "";
-      this.createArray(this.row, this.column);
-      this.chunk(this.mainArray, this.column);
 
       let rn = this.row;
       let cn = this.column;
-      console.log(rn);
-      console.log(cn);
       let a = Array.from(Array(parseInt(rn, 10)), () => new Array(parseInt(cn, 10)));
 
       this.spiralOrder(this.row,this.column,a);
@@ -103,7 +80,6 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 #container {
   width: 100%;
