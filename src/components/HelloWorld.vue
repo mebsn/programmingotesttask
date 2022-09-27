@@ -14,11 +14,13 @@ export default {
     return {
       row: null,
       column: null,
-      mainArray:[],
+      mainArray: [],
+      chunkedArray: [],
+      spiralArray:[],
     };
   },
   methods: {
-    createArray(n,m) {
+    createArray(n, m) {
       let array = [];
       for (let i = 1; i < n * m + 1; i++) {
         array.push(i);
@@ -26,45 +28,59 @@ export default {
       this.mainArray = array;
       // console.log(this.mainArray);
     },
-    formSpiralMatrix() {
-    const arr = this.mainArray;
-    // console.log("bla", arr);
-    let row = 0;
-    let col = 0;
-    let rowEnd = this.row - 1;
-    let colEnd = this.column - 1;
-    let counter = 1;
-    while (col <= colEnd && row <= rowEnd) {
-        for (let i = col; i <= colEnd; i++) {
-            arr[row][i] = counter;
-            counter++;
-        }
-        row++;
+    chunk(items, size) {
+      const chunks = [];
+      items = [].concat(...items);
 
-        for (let i = row; i <= rowEnd; i++) {
-            arr[i][colEnd] = counter;
-            counter++;
-        }
-        colEnd--;
-
-        for (let i = colEnd; i >= col; i--) {
-            arr[rowEnd][i] = counter;
-            counter++;
-        }
-        rowEnd--;
-
-        for (let i = rowEnd; i >= row; i--) {
-            arr[i][col] = counter;
-            counter++;
-        }
-        col++;
-    }
-    return arr;
+      while (items.length) {
+        chunks.push(items.splice(0, size));
+      }
+      this.chunkedArray = chunks;
+      console.log(this.chunkedArray);
     },
-    async createTable(){
-      await this.createArray(this.row, this.column);
-      this.formSpiralMatrix(this.mainArray);
-    }
+    spiralOrder(matrix) {
+      let ans = [];
+
+      if (matrix.length == 0) return ans;
+
+      let R = this.row,
+        C = this.column;
+      let seen = new Array(R);
+      for (let i = 0; i < R; i++) {
+        seen[i] = new Array(C);
+        for (let j = 0; j < C; j++) {
+          seen[i][j] = false;
+        }
+      }
+
+      let dr = [0, 1, 0, -1];
+      let dc = [1, 0, -1, 0];
+      let r = 0,
+        c = 0,
+        di = 0;
+      for (let i = 0; i < R * C; i++) {
+        ans.push(matrix[r]);
+        seen[r] = true;
+        let cr = r + dr[di];
+        let cc = c + dc[di];
+
+        if (0 <= cr && cr < R && 0 <= cc && cc < C && !seen[cr][cc]) {
+          r = cr;
+          c = cc;
+        } else {
+          di = (di + 1) % 4;
+          r += dr[di];
+          c += dc[di];
+        }
+      }
+      this.spiralArray = ans;
+      console.log("bla", this.spiralArray);
+    },
+    async createTable() {
+      this.createArray(this.row, this.column);
+      this.chunk(this.mainArray, this.column);
+      this.spiralOrder(this.chunkedArray);
+    },
   },
 };
 </script>
