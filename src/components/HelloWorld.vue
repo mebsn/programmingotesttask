@@ -83,6 +83,9 @@ export default {
         for (var c = 0; c < parseInt(cn, 10); c++) {
           var y = x.insertCell(c);
           y.innerHTML = this.spiralArray[r][c];
+          y.style.width = "50px";
+          y.style.height = "50px";
+          y.style.color = "white"
           if ( 40*this.spiralArray[r][c] < 256){
             y.style.backgroundColor = `rgba(${40*this.spiralArray[r][c]},0,0 )`;
 
